@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Russian Roulette</title>
+<style>
+
+  /* General Styles for Oregon Trail feel */
+  body {
+    margin: 0;
+    /* Classic green text on black background */
+    background-color: black;
+    color: #00ff00;
+    /* Use a monospace font, typical for era */
+    font-family: 'monospace', sans-serif; 
+    /* Use Flexbox for layout control */
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    height: 100vh; /* Ensure body takes full viewport height */
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: center;
+    letter-spacing: 1px; /* Adds 2 pixels of space between each character */
+  }
+
+  /* Styling the main content areas */
+  #gameArea {
+    /* Use flex-grow to make this div expand and fill the remaining space */
+    flex-grow: 1; 
+    /* Important: Set a minimum height to 0 to prevent flex items from overstretching if content is large */
+    min-height: 0; 
+    display: flex;
+    align-items: center; /* Center ASCII content vertically within the area */
+    justify-content: center; /* Center ASCII content horizontally */
+    
+    /* *** FONT SIZE ADJUSTMENT HERE *** */
+    font-size: 16px; /* Reduced from 20px to make content smaller and fit better */
+    
+    white-space: pre-wrap; 
+    /* Add scrollbar only to the game area if content (animation) overflows this limited height */
+    overflow-y: auto; 
+    padding-bottom: 20px;
+    text-align: center;
+  }
+  
+  /* The PRE element needs to respect its parent's (gameArea) max height */
+  #ascii-output {
+      max-height: 100%;
+      overflow: auto; /* Allows scrolling within the <pre> if it's too large for the remaining screen */
+  }
+
+  /* Footer Container which stays fixed at the bottom */
+  #footer-container {
+      width: 100%; 
+      background-color: black; 
+      padding: 10px; 
+      box-sizing: border-box;
+      height: 200px; /* Fixed height for the footer area */
+      border-top: 3px solid #00ff00;
+  }
+
+  #ui {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 0px; 
+    border-top: none; 
+  }
+
+  /* Styling for interactive options/buttons */
+  .option {
+    margin: 8px 0;
+    cursor: pointer;
+    font-weight: bold;
+    transition: color 0.2s;
+    font-size: 18px;
+  }
+  
+  /* Simple hover effect for interactivity */
+  .option:hover {
+    color: #00ffaa;
+    text-decoration: underline;
+  }
+  
+  h2 {
+    margin: 0;
+    padding-bottom: 15px;
+    font-size: 22px;
+  }
+
+  /* Styling the input panel/form */
+  form {
+    padding-top: 15px;
+    border-top: 2px solid #00ff00;
+    text-align: left;
+    max-width: 400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 18px;
+  }
+
+  /* Styling the input field itself */
+  input[type="text"] {
+    /* Match the body font style */
+    font-family: 'Courier New', Courier, monospace; 
+    /* Match the body color scheme */
+    background-color: black;
+    color: #00ff00;
+    /* Remove default browser borders and styling */
+    border: 1px solid #00ff00; 
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+    /* Optional: Remove the standard blinking cursor color and match text color */
+    caret-color: #00ff00; 
+  }
+
+  /* Style for when the input field is focused (clicked on) */
+  input[type="text"]:focus {
+      outline: none; /* Removes the default blue/glow outline */
+  }
+
+</style>
+</head>
+<body>
+  <!-- The main scrollable area for the ASCII art -->
+  <div id="gameArea">
+    <pre id="ascii-output"></pre>
+  </div>
+
+  <!-- The fixed-height container for the UI and Input Form -->
+  <div id="footer-container">
+    <div id="ui">
+      <h2>Choose your action:</h2>
+      <div class="option" onclick="handleChoice(1)">1. Start Game</div>
+      <div class="option" onclick="handleChoice(2)">2. Instructions</div>
+    </div>
+    
+    <!-- Integrated and Styled Form/Typing Panel -->
+    <form id="inputForm">
+      <label for="gameInput">Enter input:</label>
+      <input type="text" id="gameInput" name="gameInput" placeholder="Type here...">
+    </form>
+  </div>
+
+   <!-- Link to the JavaScript file -->
+   <script src="logic.js"></script> 
+</body>
+</html>

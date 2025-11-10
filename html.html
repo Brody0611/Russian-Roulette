@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oregon Trail ASCII</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #game-container {
+            width: 80ch; /* Width based on character count for consistent ASCII art */
+            padding: 10px;
+            border: 1px solid white;
+            margin-top: 20px;
+        }
+        pre {
+            white-space: pre; /* Preserves whitespace for ASCII art */
+            margin: 0;
+        }
+        button {
+            margin: 5px;
+            padding: 5px 10px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        #status-area {
+            margin-top: 10px;
+            padding: 5px;
+            border-top: 1px solid white;
+        }
+    </style>
+</head>
+<body>
+    <h1>The Oregon Trail</h1>
+    <div id="game-container">
+        <pre id="ascii-display">
++------------------------------------------------------+
+| |
++------------------------------------------------------+
+
+
+What is your choice?
+Miles traveled: 0 | Food: 0 lbs | Health: Good
+
+
+Start Game
+Learn About Trail
+End
+
+
+let milesTraveled = 0;
+let food = 500; // Starting with some food
+let health = 100; // 100 is good health
+let gameActive = false;
+let gameSpeed = "Normal";
+const asciiDisplay = document.getElementById('ascii-display');
+const statusMessage = document.getElementById('status-message');
+const milesSpan = document.getElementById('miles');
+const foodSpan = document.getElementById('food');
+const healthSpan = document.getElementById('health');
+const controlsDiv = document.getElementById('controls');
+function updateDisplay(asciiArt, message) {
+asciiDisplay.textContent = asciiArt;
+statusMessage.textContent = message;
+milesSpan.textContent = milesTraveled;
+foodSpan.textContent = food;
+healthSpan.textContent = health > 50 ? 'Good' : health > 20 ? 'Fair' : 'Poor';
+}
+function startGame() {
+gameActive = true;
+updateDisplay(wagonArt, "You are on the trail. Choose your action.");
+controlsDiv.innerHTML = <button onclick="travel()">Travel</button> <button onclick="hunt()">Hunt</button> <button onclick="rest()">Rest</button>;
+}
+function endGame() {
+gameActive = false;
+updateDisplay(gameOverArt, "Game Over. Thanks for playing!");
+controlsDiv.innerHTML = <button onclick="location.reload()">Restart</button>;
+}
+function travel() {
+if (!gameActive) return;
+const distance = Math.floor(Math.random() * 50) + 20;
+const foodUsed = 20;
+milesTraveled += distance;
+food -= foodUsed;
+if (food <= 0) {
+gameOver("You ran out of food and starved to death.");
+return;
+}
+// Random events
+if (Math.random() < 0.3) {
+const event = randomEvent();
+updateDisplay(wagonArt, You traveled ${distance} miles. ${event});
+} else {
+updateDisplay(wagonArt, You traveled ${distance} miles.);
+}
+if (milesTraveled >= 2000) { // Simple win condition
+winGame();
+}
+}
+function hunt() {
+if (!gameActive) return;
+const foodFound = Math.floor(Math.random() * 100) + 50;
+food += foodFound;
+health += 10; // hunting improves health slightly
+if (health > 100) health = 100;
+updateDisplay(huntArt, You went hunting and found ${foodFound} lbs of food.);
+}
+function rest() {
+if (!gameActive) return;
+const foodUsed = 10;
+food -= foodUsed;
+health += 20;
+if (health > 100) health = 100;
+if (food <= 0) {
+gameOver("You ran out of food while resting and starved.");
+return;
+}
+updateDisplay(restArt, "You rested and recovered your strength.");
+}
+function randomEvent() {
+const events = [
+"A sudden storm damaged your supplies!", food -= 50,
+"You found an abandoned wagon with some food.", food += 30,
+"One of your party members got sick (dysentery).", health -= 30,
+"A friendly traveler shared some food and advice.", food += 20,
+"Your wagon wheel broke.", milesTraveled -= 10,
+];
+const eventIndex = Math.floor(Math.random() * (events.length / 2)) * 2;
+// Execute the associated action
+eval(events[eventIndex + 1]);
+return events[eventIndex];
+}
+function gameOver(message) {
+gameActive = false;
+updateDisplay(gameOverArt, Game Over: ${message});
+controlsDiv.innerHTML = <button onclick="location.reload()">Restart</button>;
+}
+function winGame() {
+gameActive = false;
+updateDisplay(winArt, "CONGRATULATIONS! You have reached Oregon!");
+controlsDiv.innerHTML = <button onclick="location.reload()">Play Again</button>;
+}
+function learnAboutTrail() {
+updateDisplay(infoArt, "The Oregon Trail was a major migration route... Try to survive!");
+}
+// --- ASCII Art definitions ---
+const wagonArt = `
+______
+/ \
+/________\
+| o o |
+| __ |
+| / \ |
+| | | |
+/ \/ \/ \/ \
+| |
+| |
+\___________/
+Moving through the plains...
+`;
+const huntArt = `
+/\
+/ \
+/|__|\
+| |
+|\/|
+\__/
+You are hunting...
+`;
+const restArt = `
+/ \
+/ \
+| |
+| (o)(o) |
+| __ |
+\ -- /
+\________/
+Resting by the fire...
+`;
+const gameOverArt = `
+| __ |\ | | \ | |
+| __ ||\| |/ |__ |
+||__| |\ ||
+YOU DIED OF DYSENTERY
+`;
+const winArt = `
+| | | |/ || \ | || | | |
+| || |\_ \| \| || | | |
+| | | 0 | |\ || || |
+|| |||/|| \| \__/
+YOU MADE IT TO OREGON!
+`;
+const infoArt = `
++------------------------------------------------------+
+| The Oregon Trail was a 2,000-mile (3,200 km) east- |
+| west, large-wheeled wagon route and emigrant trail |
+| in the United States... be prepared for challenges! |
++------------------------------------------------------+
+`;
